@@ -13,7 +13,7 @@ RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirr
 
 # built-in packages
 ENV DEBIAN_FRONTEND noninteractive
-ARG MIDORI_VERSION 9.0.0-1
+ARG MIDORI_VERSION=9.0.0-1
 RUN add-apt-repository -y ppa:fcwu-tw/apps \
     && apt update \
     && apt install -y --no-install-recommends software-properties-common curl apache2-utils \
