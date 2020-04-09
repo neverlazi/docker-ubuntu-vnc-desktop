@@ -13,37 +13,28 @@ RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirr
 
 # built-in packages
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt update \
+ARG MIDORI_VERSION 9.0.0-1
+RUN add-apt-repository -y ppa:fcwu-tw/apps \
+    && apt update \
     && apt install -y --no-install-recommends software-properties-common curl apache2-utils \
     && apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         supervisor nginx sudo net-tools zenity xz-utils \
         dbus-x11 x11-utils alsa-utils \
-        mesa-utils libgl1-mesa-dri \
-    && apt autoclean -y \
-    && apt autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+        mesa-utils libgl1-mesa-dri
 # install debs error if combine together
-RUN add-apt-repository -y ppa:fcwu-tw/apps \
-    && apt update \
-    && apt install -y --no-install-recommends --allow-unauthenticated \
+RUN apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc=0.9.16-1 \
         vim-tiny ttf-ubuntu-font-family ttf-wqy-zenhei  \
-    && add-apt-repository -r ppa:fcwu-tw/apps \
-    && apt autoclean -y \
-    && apt autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+    && add-apt-repository -r ppa:fcwu-tw/apps
 
-RUN curl -o midori.deb https://packages.astian.org/pool/main/m/midori/midori_9.0.0-1_amd64.deb \
+RUN curl -o midori.deb https://packages.astian.org/pool/main/m/midori/midori_${MIDORI_VERSION}_amd64.deb \
     && apt-get install -y gdebi \
-    && gdebi -y midori.deb
+    && gdebi -y midori.deb \
+    && rm midori.deb
 
-RUN apt update \
-    && apt install -y --no-install-recommends --allow-unauthenticated \
-        lxde gtk2-engines-murrine gnome-themes-standard gtk2-engines-pixbuf gtk2-engines-murrine arc-theme \
-    && apt autoclean -y \
-    && apt autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt install -y --no-install-recommends --allow-unauthenticated \
+        lxde gtk2-engines-murrine gnome-themes-standard gtk2-engines-pixbuf gtk2-engines-murrine arc-theme
 
 
 # Additional packages require ~600MB
@@ -55,19 +46,16 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /bin/
 RUN chmod +x /bin/tini
 
 # ffmpeg
-RUN apt update \
-    && apt install -y --no-install-recommends --allow-unauthenticated \
+RUN apt install -y --no-install-recommends --allow-unauthenticated \
         ffmpeg \
-    && rm -rf /var/lib/apt/lists/* \
     && mkdir /usr/local/ffmpeg \
     && ln -s /usr/bin/ffmpeg /usr/local/ffmpeg/ffmpeg
 
 # python library
 COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
-RUN apt-get update \
-    && dpkg-query -W -f='${Package}\n' > /tmp/a.txt \
+RUN dpkg-query -W -f='${Package}\n' > /tmp/a.txt \
     && apt-get install -y python-pip python-dev build-essential \
-	&& pip install setuptools wheel && pip install -r /tmp/requirements.txt \
+    && pip install setuptools wheel && pip install -r /tmp/requirements.txt \
     && dpkg-query -W -f='${Package}\n' > /tmp/b.txt \
     && apt-get remove -y `diff --changed-group-format='%>' --unchanged-group-format='' /tmp/a.txt /tmp/b.txt | xargs` \
     && apt-get autoclean -y \
