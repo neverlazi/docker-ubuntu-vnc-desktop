@@ -25,15 +25,18 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 # install debs error if combine together
 RUN add-apt-repository -y ppa:fcwu-tw/apps \
-    && sudo add-apt-repository ppa:midori/ppa \
     && apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc=0.9.16-1 \
-        vim-tiny midori ttf-ubuntu-font-family ttf-wqy-zenhei  \
+        vim-tiny ttf-ubuntu-font-family ttf-wqy-zenhei  \
     && add-apt-repository -r ppa:fcwu-tw/apps \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
+
+RUN curl -o midori.deb https://packages.astian.org/pool/main/m/midori/midori_9.0.0-1_amd64.deb \
+    && apt-get install -y gdebi \
+    && gdebi -y midori.deb
 
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
