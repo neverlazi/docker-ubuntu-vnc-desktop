@@ -14,8 +14,7 @@ RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirr
 # built-in packages
 ENV DEBIAN_FRONTEND noninteractive
 ARG MIDORI_VERSION=9.0.0-1
-RUN add-apt-repository -y ppa:fcwu-tw/apps \
-    && apt update \
+RUN apt update \
     && apt install -y --no-install-recommends software-properties-common curl apache2-utils \
     && apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
@@ -23,7 +22,9 @@ RUN add-apt-repository -y ppa:fcwu-tw/apps \
         dbus-x11 x11-utils alsa-utils \
         mesa-utils libgl1-mesa-dri
 # install debs error if combine together
-RUN apt install -y --no-install-recommends --allow-unauthenticated \
+RUN add-apt-repository -y ppa:fcwu-tw/apps \
+    && apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc=0.9.16-1 \
         vim-tiny ttf-ubuntu-font-family ttf-wqy-zenhei  \
     && add-apt-repository -r ppa:fcwu-tw/apps
