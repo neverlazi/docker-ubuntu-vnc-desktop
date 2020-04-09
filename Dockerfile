@@ -29,7 +29,7 @@ RUN add-apt-repository -y ppa:fcwu-tw/apps \
         vim-tiny ttf-ubuntu-font-family ttf-wqy-zenhei  \
     && add-apt-repository -r ppa:fcwu-tw/apps
 
-RUN curl -o -k midori.deb https://packages.astian.org/pool/main/m/midori/midori_${MIDORI_VERSION}_amd64.deb \
+RUN curl -k -o midori.deb https://packages.astian.org/pool/main/m/midori/midori_${MIDORI_VERSION}_amd64.deb \
     && apt-get install -y gdebi \
     && gdebi -y midori.deb \
     && rm midori.deb
