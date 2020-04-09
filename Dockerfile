@@ -25,7 +25,7 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 # install debs error if combine together
 RUN add-apt-repository -y ppa:fcwu-tw/apps \
-    && add-apt-repository 'deb http://ppa.launchpad.net/stemp/ubuntu gutsy main' \
+    && sudo add-apt-repository ppa:midori/ppa \
     && apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc=0.9.16-1 \
