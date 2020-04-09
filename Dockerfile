@@ -31,7 +31,7 @@ RUN add-apt-repository -y ppa:fcwu-tw/apps \
 
 RUN curl -k -o midori.deb https://packages.astian.org/pool/main/m/midori/midori_${MIDORI_VERSION}_amd64.deb \
     && apt-get install -y gdebi \
-    && gdebi -y midori.deb \
+    && gdebi -n midori.deb \
     && rm midori.deb
 
 RUN apt install -y --no-install-recommends --allow-unauthenticated \
